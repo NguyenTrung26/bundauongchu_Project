@@ -1,0 +1,128 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html, body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Navbar chính */
+.color-navbar,
+.navbar-fixed {
+  background-color: #a25516 !important;
+  border-bottom: 1px solid #dee2e6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1030;
+}
+
+/* Logo hình tròn */
+.logo {
+  width: 45px;
+  height: auto;
+  margin-right: 12px;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  padding: 4px;
+}
+
+/* Nav item */
+.nav-link {
+  color: #ffffff !important;
+  font-weight: 500;
+  padding: 10px 15px;
+}
+
+li.nav-item {
+  padding: 5px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+li.nav-item:hover {
+  background-color: #6f3200;
+}
+
+/* Nút hành động */
+.btn-add,
+.btn-in4 {
+  color: #ffffff !important;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.btn-add {
+  background-color: #a25516 !important;
+}
+
+.btn-in4 {
+  background-color: #3f3a35 !important;
+}
+
+/* Layout */
+.row {
+  margin: 0;
+}
+
+.bg-secondary {
+  text-align: center;
+  border-radius: 5px;
+}
+
+/* Footer */
+.footer {
+  position: relative;
+  width: 100%;
+  font-size: 15px;
+  padding: 15px 0;
+  background-color: #a25516 !important;
+  color: white;
+  text-align: center;
+  margin-top: auto;
+}
+
+/* 🌙 Dark Mode Style */
+.dark-mode {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+}
+h3{
+    color: #000;
+}
+.dark-mode .navbar,
+.dark-mode .footer,
+.dark-mode .bg-secondary {
+  background-color: #333 !important;
+  color: #fff;
+}
+
+.dark-mode .nav-link {
+  color: #ddd !important;
+}
+
+.dark-mode .btn-add,
+.dark-mode .btn-in4 {
+  background-color: #555 !important;
+}
+
+/* 📱 Responsive Fixes */
+@media (max-width: 767px) {
+  .navbar-nav {
+    text-align: center;
+  }
+
+  .form-check {
+    margin-top: 10px;
+  }
+
+  .button .btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
