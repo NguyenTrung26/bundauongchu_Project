@@ -1,3 +1,6 @@
+<?php
+include('./includes/connect.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -74,110 +77,71 @@
         </div>
 
         <!-- fourth child -->
-        <div class="row">
-            <div class="col md-10">
-                <!-- product -->
+        <div class="row px-3">
+            <!-- Sản phẩm -->
+            <div class="col-md-10">
                 <div class="row">
-                    <div class="col-md-4 mb-2">
-                        <div class="card" style="width: 18rem;">
-                            <img src="./images/45k.jpg" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                                <a href="#" class="btn-add">Add to cart</a>
-                                <a href="#" class="btn-in4">Thông tin</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-2">
-                        <div class="card" style="width: 18rem;">
-                            <img src="./images/30k.jpg" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                                <a href="#" class="btn-add">Add to cart</a>
-                                <a href="#" class="btn-in4">Thông tin</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-2">
-                        <div class="card" style="width: 18rem;">
-                            <img src="./images/55k.jpg" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                                <a href="#" class="btn-add">Add to cart</a>
-                                <a href="#" class="btn-in4">Thông tin</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-2">
-                        <div class="card" style="width: 18rem;">
-                            <img src="./images/80k.jpg" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                                <a href="#" class="btn-add">Add to cart</a>
-                                <a href="#" class="btn-in4">Thông tin</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-2">
-                        <div class="card" style="width: 18rem;">
-                            <img src="./images/90k.jpg" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                                <a href="#" class="btn-add">Add to cart</a>
-                                <a href="#" class="btn-in4">Thông tin</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-2">
-                        <div class="card" style="width: 18rem;">
-                            <img src="./images/120k.jpg" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                                <a href="#" class="btn-add">Add to cart</a>
-                                <a href="#" class="btn-in4">Thông tin</a>
+                    <?php
+                    $select_products = "SELECT * FROM products ORDER BY RAND() LIMIT 0,6";
+                    $result_products = mysqli_query($con, $select_products);
+                    while ($row_products = mysqli_fetch_array($result_products)) {
+                        $product_title = $row_products['product_title'];
+                        $product_desc = $row_products['product_desc'];
+                        $product_price = $row_products['product_price'];
+                        $product_image = $row_products['product_image'];
+                        $cate_id = $row_products['cate_id'];
+
+                        echo "
+                <div class='col-md-4 mb-4'>
+                    <div class='card h-100 shadow-sm'>
+                        <img src='./images/$product_image' class='card-img-top' alt='$product_title'>
+                        <div class='card-body d-flex flex-column'>
+                            <h5 class='card-title'>$product_title</h5>
+                            <p class='card-text small text-muted'>$product_desc</p>
+                            <p class='fw-bold text-danger'>Giá: " . number_format($product_price) . " VNĐ</p>
+                            <div class='mt-auto'>
+                                <a href='#' class='btn btn-sm btn-primary'>Thêm vào giỏ hàng</a>
+                                <a href='index.php?category=$cate_id' class='btn btn-sm btn-outline-secondary'>Thông tin</a>
                             </div>
                         </div>
                     </div>
                 </div>
+                ";
+                    }
+                    ?>
+                </div>
             </div>
 
-
+            <!-- Sidebar -->
             <div class="col-md-2 bg-secondary p-0">
-                <!-- sidenav -->
-                 <ul class="navbar-nav me-auto">
-                    <li style="background-color:rgb(179, 85, 7) !important;" class="nav-item bg-info">
-                        <a href="" class="nav-link text-light"><h4>MENU</h4></a>
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item" style="background-color:rgb(179, 85, 7) !important;">
+                        <a href="#" class="nav-link text-light text-center py-2">
+                            <h5 class="mb-0">🍽 MENU</h5>
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="" class="nav-link text-light">🍜 Bún đậu thập cẩm</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="" class="nav-link text-light">🥩 Chả cốm, chả cua</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="" class="nav-link text-light">🧈 Đậu rán</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="" class="nav-link text-light">🐷 Lòng heo</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="" class="nav-link text-light">🍖 Thịt luộc</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="" class="nav-link text-light">🥤 Nước uống</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="" class="nav-link text-light">🍢 Ăn vặt khác</a>
-                    </li>
-                 </ul>
+                    <?php
+                    $select_categories = "SELECT * FROM `categories`";
+                    $result_categories = mysqli_query($con, $select_categories);
+                    while ($row_categories = mysqli_fetch_assoc($result_categories)) {
+                        $cate_title = $row_categories['cate_title'];
+                        $cate_id = $row_categories['cate_id'];
+                        echo "<li class='nav-item'>
+                        <a href='index.php?category=$cate_id' class='nav-link text-light'>$cate_title</a>
+                      </li>";
+                    }
+                    ?>
+                    <li class="nav-item"><a href="#" class="nav-link text-light">🍜 Bún đậu thập cẩm</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link text-light">🥩 Chả cốm, chả cua</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link text-light">🧈 Đậu rán</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link text-light">🐷 Lòng heo</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link text-light">🍖 Thịt luộc</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link text-light">🥤 Nước uống</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link text-light">🍢 Ăn vặt khác</a></li>
+                </ul>
             </div>
         </div>
+
         <!-- last child -->
         <!-- <div class="bg-info p-3 text-center">
         <p class="text-light">© 2025 Bún đậu Ông Chú. All rights reserved.</p>
