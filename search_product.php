@@ -57,6 +57,13 @@ include('./functions/common_func.php');
                 </div>
             </div>
         </nav>
+        <?php
+        // cart function
+        if (isset($_GET['add_to_cart'])) {
+            $product_id = $_GET['add_to_cart'];
+            addToCart($product_id);
+        }
+        ?>
         <!-- second child -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
             <ul class="navbar-nav me-auto">
@@ -115,10 +122,7 @@ include('./functions/common_func.php');
         </div>
 
         <!-- last child -->
-        <!-- <div class="bg-info p-3 text-center">
-        <p class="text-light">© 2025 Bún đậu Ông Chú. All rights reserved.</p>
-        <p class="text-light">Designed by <a href="" class="text-light">Your Name</a></p>
-    </div> -->
+       <?php include('./includes/footer.php'); ?>
 
     </div>
 

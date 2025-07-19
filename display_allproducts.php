@@ -52,19 +52,11 @@ include('./functions/common_func.php');
                     <form class="d-flex" role="search" action="search_product.php" method="get">
                         <input name="search_data" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
                         <!-- <button class="btn btn-outline-success" type="submit">Search</button> -->
-                        <input type="submit" name="search_data_product" class="btn btn-outline-success" value="Search">
+                         <input type="submit" name="search_data_product" class="btn btn-outline-success" value="Search">
                     </form>
                 </div>
             </div>
         </nav>
-
-        <!-- cart function -->
-         <?php
-            if (isset($_GET['add_to_cart'])) {
-                $product_id = $_GET['add_to_cart'];
-                addToCart($product_id);
-            }
-         ?>
         <!-- second child -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
             <ul class="navbar-nav me-auto">
@@ -93,7 +85,7 @@ include('./functions/common_func.php');
                 <div class="row">
                     <?php
                     //display products
-                    getProducts();
+                    getAllProducts();
                     get_uni_categories();
                     ?>
                 </div>
