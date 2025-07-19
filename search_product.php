@@ -49,7 +49,7 @@ include('./functions/common_func.php');
                         </li>
 
                     </ul>
-                    <form class="d-flex" role="search" action="search_product.php" method="get">
+                    <form class="d-flex" role="search">
                         <input name="search_data" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
                         <!-- <button class="btn btn-outline-success" type="submit">Search</button> -->
                          <input type="submit" name="search_data_product" class="btn btn-outline-success" value="Search">
@@ -85,7 +85,7 @@ include('./functions/common_func.php');
                 <div class="row">
                     <?php
                     //display products
-                    getProducts();
+                    searchProducts();
                     get_uni_categories();
                     ?>
                 </div>
