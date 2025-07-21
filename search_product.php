@@ -49,7 +49,7 @@ include('./functions/common_func.php');
                             ?></sup></a>
                         </li>
                         <li class="nav-item">
-                            <a href="" class="nav-link">Total Price: <?php get_total_price();?></a>
+                            <a href="cart.php" class="nav-link">Total Price: <?php get_total_price();?></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Liên hệ</a>
