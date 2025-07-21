@@ -42,7 +42,14 @@ include('./functions/common_func.php');
                             <a class="nav-link" href="display_allproducts.php">Menu</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Đặt món</a>
+                            <a class="nav-link" href="cart.php">Giỏ Hàng</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link"><i class="fa-solid fa-cart-shopping"></i><sup><?php display_cart_item();
+                            ?></sup></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link">Total Price: <?php get_total_price();?></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Liên hệ</a>
@@ -59,12 +66,12 @@ include('./functions/common_func.php');
         </nav>
 
         <!-- cart function -->
-         <?php
-            if (isset($_GET['add_to_cart'])) {
-                $product_id = $_GET['add_to_cart'];
-                addToCart($product_id);
-            }
-         ?>
+        <?php
+        if (isset($_GET['add_to_cart'])) {
+            $product_id = $_GET['add_to_cart'];
+            addToCart($product_id);
+        }
+        ?>
         <!-- second child -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
             <ul class="navbar-nav me-auto">
@@ -95,6 +102,8 @@ include('./functions/common_func.php');
                     //display products
                     getProducts();
                     get_uni_categories();
+                    // $ip = getIPAddress();
+                    // echo 'User Real IP Address - ' . $ip;
                     ?>
                 </div>
             </div>

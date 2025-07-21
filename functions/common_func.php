@@ -21,14 +21,14 @@ function getProducts()
 }
 
 //hien thi tat ca san pham
-function getAllProducts(){
+function getAllProducts()
+{
     global $con;
     $query = "SELECT * FROM products ORDER BY RAND()";
     $result = mysqli_query($con, $query);
     while ($row = mysqli_fetch_array($result)) {
         displayProductCard($row);
     }
-
 }
 
 // hiển thị sản phẩm theo danh mục
@@ -87,7 +87,7 @@ function searchProducts()
 
 // hàm dùng chung để hiển thị thẻ sản phẩm
 function displayProductCard($product)
-{   
+{
     $product_id = htmlspecialchars($product['product_id']);
     $title = htmlspecialchars($product['product_title']);
     $desc = htmlspecialchars($product['product_desc']);
@@ -114,45 +114,110 @@ function displayProductCard($product)
 }
 
 //add to cart function
-function addToCart() {
+function addToCart()
+{
     if (isset($_GET['add_to_cart'])) {
         global $con;
+        $ip = getIPAddress();
         $product_id = $_GET['add_to_cart'];
 
-        // Lấy thông tin sản phẩm từ bảng products
-        $query = "SELECT * FROM products WHERE product_id = '$product_id'";
-        $result = mysqli_query($con, $query);
+        // Kiểm tra sản phẩm đã có trong giỏ hàng hay chưa
+        $check_product = "SELECT * FROM `cart` WHERE ip_address='$ip' AND product_id='$product_id'";
+        $result_check = mysqli_query($con, $check_product);
 
-        if ($result && mysqli_num_rows($result) > 0) {
-            $row = mysqli_fetch_assoc($result);
-            $title = mysqli_real_escape_string($con, $row['product_title']);
-            $price = $row['product_price'];
-            $image = mysqli_real_escape_string($con, $row['product_image']);
-
-            // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-            $check_query = "SELECT * FROM cart WHERE product_id = '$product_id'";
-            $check_result = mysqli_query($con, $check_query);
-
-            if (mysqli_num_rows($check_result) > 0) {
-                // Nếu đã có -> tăng số lượng
-                $update_query = "UPDATE cart SET quantity = quantity + 1 WHERE product_id = '$product_id'";
-                mysqli_query($con, $update_query);
-            } else {
-                // Nếu chưa có -> thêm mới với số lượng = 1
-                $insert_query = "INSERT INTO cart (product_id, product_title, product_price, product_image, quantity) 
-                                 VALUES ('$product_id', '$title', '$price', '$image', 1)";
-                mysqli_query($con, $insert_query);
-            }
-
-            echo "<script>alert('Đã thêm $title vào giỏ hàng!');</script>";
-            echo "<script>window.location.href='index.php';</script>";
+        if (mysqli_num_rows($result_check) > 0) {
+            // Nếu đã tồn tại → cập nhật tăng quantity lên 1
+            $update_query = "UPDATE `cart` SET quantity = quantity + 1 WHERE ip_address='$ip' AND product_id='$product_id'";
+            mysqli_query($con, $update_query);
+            echo "<script>alert('Đã cập nhật số lượng sản phẩm trong giỏ hàng')</script>";
+            echo "<script>window.open('index.php', '_self')</script>";
         } else {
-            echo "<script>alert('Sản phẩm không tồn tại!');</script>";
-            echo "<script>window.location.href='index.php';</script>";
+            // Nếu chưa có → thêm mới với quantity = 1
+            $insert_query = "INSERT INTO `cart` (product_id, ip_address, quantity) VALUES ('$product_id', '$ip', 1)";
+            mysqli_query($con, $insert_query);
+            echo "<script>alert('Sản phẩm đã được thêm vào giỏ hàng')</script>";
+            echo "<script>window.open('index.php', '_self')</script>";
         }
     }
 }
 
+
+// get IP address
+function getIPAddress()
+{
+    // whether IP is from the shared internet  
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    }
+    // whether IP is from the proxy  
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    // whether IP is from the remote address  
+    else {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+    return $ip;
+}
+
+// $ip = getIPAddress();  
+// echo 'User Real IP Address - ' . $ip;  
+
+// displaying number of items in cart 
+function display_cart_item()
+{
+    global $con;
+    $ip = getIPAddress();
+    $count_items = "SELECT * FROM `cart` WHERE ip_address='$ip'";
+    $result_count = mysqli_query($con, $count_items);
+    $count = mysqli_num_rows($result_count);
+    echo $count;
+}
+
+// Getting Total price 
+function get_total_price()
+{
+    global $con;
+    $ip = getIPAddress();
+    $total = 0;
+
+    $cart_query = "SELECT * FROM `cart` WHERE ip_address='$ip'";
+    $result = mysqli_query($con, $cart_query);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $product_id = $row['product_id'];
+        $quantity = $row['quantity'];
+
+        $select_product = "SELECT product_price FROM `products` WHERE product_id='$product_id'";
+        $result_product = mysqli_query($con, $select_product);
+
+        if ($row_product = mysqli_fetch_assoc($result_product)) {
+            $price = $row_product['product_price'];
+            $subtotal = $price * $quantity; // ✅ nhân số lượng
+            $total += $subtotal;
+        }
+    }
+
+    echo number_format($total); // định dạng đẹp 12,000,...
+}
+// function get_total_price()
+// {
+//     global $con;
+//     $ip = getIPAddress();
+//     $total = 0;
+//     $cart_query = "SELECT * FROM `cart` WHERE ip_address='$ip'";
+//     $result = mysqli_query($con, $cart_query);
+//     while ($row = mysqli_fetch_assoc($result)) {
+//         $product_id = $row['product_id'];
+//         $select_products = "SELECT * FROM `products` WHERE product_id='$product_id'";
+//         $result_products = mysqli_query($con, $select_products);
+//         while ($row_product_price = mysqli_fetch_array($result_products)) {
+//             $product_price = array($row_product_price['product_price']);
+//             $price_table = $row_product_price['product_price'];
+//             $product_values = array_sum($product_price);
+//             $total += $product_values;
+//         }
+//     }
+//     echo $total;
+// }
 ?>
-
-

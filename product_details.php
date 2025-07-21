@@ -49,17 +49,24 @@ if (isset($_GET['product_id'])) {
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index.php">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="display_allproducts.php">Menu</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Đặt món</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Liên hệ</a>
-                    </li>
+                            <a class="nav-link active" aria-current="page" href="index.php">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="display_allproducts.php">Menu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="cart.php">Giỏ Hàng</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link"><i class="fa-solid fa-cart-shopping"></i><sup><?php display_cart_item();
+                            ?></sup></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link">Total Price: <?php get_total_price();?></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Liên hệ</a>
+                        </li>
 
                 </ul>
                 <form class="d-flex" role="search" action="search_product.php" method="get">
@@ -97,7 +104,7 @@ if (isset($_GET['product_id'])) {
             <div class="col-md-2 bg-secondary p-3">
                 <h5 class="text-light text-center mb-3">🍽 MENU</h5>
                 <ul class="navbar-nav">
-                    <?php 
+                    <?php
                     getCategories(); ?>
                     <li class="nav-item"><a href="#" class="nav-link text-light">🍜 Bún đậu thập cẩm</a></li>
                     <li class="nav-item"><a href="#" class="nav-link text-light">🥩 Chả cốm, chả cua</a></li>
@@ -132,7 +139,45 @@ if (isset($_GET['product_id'])) {
                     </div>
                 </div>
 
-                <!-- Optional: Suggest related products here -->
+                <!-- Related Products -->
+                <div class="mt-4">
+                    <h3>Sản phẩm liên quan</h3>
+                    <div class="row">
+                        <?php
+                        $related_query = "SELECT * FROM products WHERE cate_id = '$cate_id' AND product_id != '$product_id' LIMIT 4";
+                        $related_result = mysqli_query($con, $related_query);
+                        if (mysqli_num_rows($related_result) > 0) {
+                            while ($related_product = mysqli_fetch_assoc($related_result)) {
+                                echo "<div class='col-md-3 mb-3'>";
+                                echo "<div class='card'>";
+                                echo "<img src='./images/" . $related_product['product_image'] . "' class='card-img-top object-fit-cover' style='height: 200px;' alt='" . htmlspecialchars($related_product['product_title']) . "'>";
+                                echo "<div class='card-body'>";
+                                echo "<h5 class='card-title'>" . htmlspecialchars($related_product['product_title']) . "</h5>";
+                                echo "<p class='card-text'>" . number_format($related_product['product_price']) . " VNĐ</p>";
+                                echo "<a href='product_details.php?product_id=" . $related_product['product_id'] . "' class='btn btn-sm btn-outline-primary'>Xem chi tiết</a>";
+                                echo "</div>";
+                                echo "</div>";
+                                echo "</div>";
+                            }
+                        } else {
+                            echo "<div class='col-md-12'><p>Không có sản phẩm liên quan.</p></div>";
+                        }
+                        ?>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h3>Đánh giá sản phẩm</h3>
+                    <p>Chưa có đánh giá nào.</p>
+                    <form>
+                        <div class="mb-3">
+                            <label for="reviewText" class="form-label">Viết đánh giá của bạn:</label>
+                            <textarea class="form-control" id="reviewText" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                    </form>
+                </div>
+
 
             </div>
         </div>
@@ -146,3 +191,13 @@ if (isset($_GET['product_id'])) {
 </body>
 
 </html>
+<?php
+function getCategoryTitle($cate_id)
+{
+    global $con;
+    $query = "SELECT cate_title FROM categories WHERE cate_id = '$cate_id'";
+    $result = mysqli_query($con, $query);
+    $category = mysqli_fetch_assoc($result);
+    return $category['cate_title'];
+}
+?>

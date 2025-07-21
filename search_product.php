@@ -36,13 +36,20 @@ include('./functions/common_func.php');
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link active" aria-current="page" href="index.php">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Menu</a>
+                            <a class="nav-link" href="display_allproducts.php">Menu</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Đặt món</a>
+                            <a class="nav-link" href="cart.php">Giỏ Hàng</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link"><i class="fa-solid fa-cart-shopping"></i><sup><?php display_cart_item();
+                            ?></sup></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link">Total Price: <?php get_total_price();?></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Liên hệ</a>
