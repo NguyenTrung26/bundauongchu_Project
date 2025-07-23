@@ -49,24 +49,24 @@ if (isset($_GET['product_id'])) {
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="index.php">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="display_allproducts.php">Menu</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="cart.php">Giỏ Hàng</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="cart.php" class="nav-link"><i class="fa-solid fa-cart-shopping"></i><sup><?php display_cart_item();
-                            ?></sup></a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="" class="nav-link">Total Price: <?php get_total_price();?></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Liên hệ</a>
-                        </li>
+                        <a class="nav-link active" aria-current="page" href="index.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="display_allproducts.php">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cart.php">Giỏ Hàng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="cart.php" class="nav-link"><i class="fa-solid fa-cart-shopping"></i><sup><?php display_cart_item();
+                                                                                                            ?></sup></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">Total Price: <?php get_total_price(); ?></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Liên hệ</a>
+                    </li>
 
                 </ul>
                 <form class="d-flex" role="search" action="search_product.php" method="get">
@@ -91,7 +91,7 @@ if (isset($_GET['product_id'])) {
                 <a class="nav-link" href="#">Wekcome Guest</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Login</a>
+                <a class="nav-link" href="./user/user_login.php">Login</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Register</a>

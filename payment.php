@@ -1,6 +1,6 @@
 <?php
-include('./includes/connect.php');
-include('./functions/common_func.php');
+include(__DIR__ . '/includes/connect.php');
+include(__DIR__ . '/functions/common_func.php');
 session_start();
 ?>
 <!DOCTYPE html>
@@ -122,16 +122,6 @@ session_start();
         </nav>
 
         <!-- third child -->
-        <div class="bg-light">
-            <h3 class="text-center p-3">🛒 Thanh toán đơn hàng</h3>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb justify-content-center">
-                    <li class="breadcrumb-item"><a href="index.php">Trang chủ</a></li>
-                    <li class="breadcrumb-item"><a href="cart.php">Giỏ hàng</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Thanh toán</li>
-                </ol>
-            </nav>
-        </div>
 
         <!-- checkout content -->
         <div class="container my-5">
@@ -288,7 +278,7 @@ session_start();
                             <div class="mt-4 small text-muted">
                                 <p><i class="fas fa-shield-alt me-2"></i>Đơn hàng của bạn được bảo vệ</p>
                                 <p><i class="fas fa-truck me-2"></i>Giao hàng trong vòng 30-45 phút</p>
-                                <p><i class="fas fa-phone me-2"></i>Hỗ trợ 24/7: 0123.456.789</p>
+                                <p><i class="fas fa-phone me-2"></i>Hỗ trợ 24/7: 0374.053.170</p>
                             </div>
                         </div>
                     </div>

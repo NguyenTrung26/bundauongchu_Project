@@ -78,7 +78,7 @@ include('./functions/common_func.php');
                     <a class="nav-link" href="#">Wekcome Guest</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Login</a>
+                    <a class="nav-link" href="./user/user_login.php">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Register</a>

@@ -19,7 +19,9 @@ include('./functions/common_func.php');
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- css file -->
-    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link rel="stylesheet" href="stylesuper.css">
+
 </head>
 
 <body>
@@ -46,10 +48,10 @@ include('./functions/common_func.php');
                         </li>
                         <li class="nav-item">
                             <a href="cart.php" class="nav-link"><i class="fa-solid fa-cart-shopping"></i><sup><?php display_cart_item();
-                            ?></sup></a>
+                                                                                                                ?></sup></a>
                         </li>
                         <li class="nav-item">
-                            <a href="" class="nav-link">Total Price: <?php get_total_price();?></a>
+                            <a href="" class="nav-link">Total Price: <?php get_total_price(); ?></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Liên hệ</a>
@@ -79,7 +81,7 @@ include('./functions/common_func.php');
                     <a class="nav-link" href="#">Wekcome Guest</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Login</a>
+                    <a class="nav-link" href="./user/user_login.php">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Register</a>

@@ -217,7 +217,7 @@ if (isset($_GET['remove'])) {
                         </a>
                         
                         <?php if ($total > 0): ?>
-                            <a href="checkout.php" class="btn-checkout">
+                            <a href="./user/checkout.php" class="btn-checkout">
                                 <i class="fas fa-credit-card me-2"></i>Thanh toán ngay
                             </a>
                         <?php endif; ?>

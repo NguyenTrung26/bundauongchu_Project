@@ -46,10 +46,10 @@ include('./functions/common_func.php');
                         </li>
                         <li class="nav-item">
                             <a href="cart.php" class="nav-link"><i class="fa-solid fa-cart-shopping"></i><sup><?php display_cart_item();
-                            ?></sup></a>
+                                                                                                                ?></sup></a>
                         </li>
                         <li class="nav-item">
-                            <a href="" class="nav-link">Total Price: <?php get_total_price();?></a>
+                            <a href="" class="nav-link">Total Price: <?php get_total_price(); ?></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Liên hệ</a>
@@ -59,7 +59,7 @@ include('./functions/common_func.php');
                     <form class="d-flex" role="search" action="search_product.php" method="get">
                         <input name="search_data" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
                         <!-- <button class="btn btn-outline-success" type="submit">Search</button> -->
-                         <input type="submit" name="search_data_product" class="btn btn-outline-success" value="Search">
+                        <input type="submit" name="search_data_product" class="btn btn-outline-success" value="Search">
                     </form>
                 </div>
             </div>
@@ -71,7 +71,7 @@ include('./functions/common_func.php');
                     <a class="nav-link" href="#">Wekcome Guest</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Login</a>
+                    <a class="nav-link" href="./user/user_login.php">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Register</a>
