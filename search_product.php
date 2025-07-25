@@ -1,6 +1,10 @@
 <?php
 include('./includes/connect.php');
 include('./functions/common_func.php');
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,7 +56,7 @@ include('./functions/common_func.php');
                             <a href="cart.php" class="nav-link">Total Price: <?php get_total_price();?></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Liên hệ</a>
+                            <a class="nav-link" href="about.php">Liên hệ</a>
                         </li>
 
                     </ul>
@@ -74,15 +78,26 @@ include('./functions/common_func.php');
         <!-- second child -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Wekcome Guest</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./user/user_login.php">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Register</a>
-                </li>
+                <?php
+                if(isset($_SESSION['username'])) {
+                    echo "<li class='nav-item'>
+                            <a class='nav-link' href='#'>Chào mừng " . $_SESSION['username'] . "</a>
+                          </li>
+                          <li class='nav-item'>
+                            <a class='nav-link' href='./user/logout.php'>Đăng xuất</a>
+                          </li>";
+                } else {
+                    echo "<li class='nav-item'>
+                            <a class='nav-link' href='#'>Chào mừng khách</a>
+                          </li>
+                          <li class='nav-item'>
+                            <a class='nav-link' href='user_login.php'>Đăng nhập</a>
+                          </li>
+                          <li class='nav-item'>
+                            <a class='nav-link' href='user_regis.php'>Đăng ký</a>
+                          </li>";
+                }
+                ?>
             </ul>
         </nav>
 

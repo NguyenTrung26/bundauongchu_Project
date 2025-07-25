@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/vendor/autoload.php'; // Autoload mới
-require __DIR__ . '/admin/db_connect.php';
+require __DIR__ . '/includes/connect.php'; // Kết nối cơ sở dữ liệu
 
 use Mpdf\Mpdf;
 

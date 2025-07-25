@@ -31,40 +31,48 @@ if (session_status() === PHP_SESSION_NONE) {
             justify-content: center;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
+
         .login-form-container {
             background: white;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             padding: 40px;
             max-width: 400px;
             width: 100%;
             margin: 20px;
         }
+
         .login-header {
             text-align: center;
             margin-bottom: 30px;
         }
+
         .login-header h2 {
             color: rgb(179, 85, 7);
             font-weight: bold;
             margin-bottom: 10px;
         }
+
         .login-header p {
             color: #666;
             margin: 0;
         }
+
         .form-floating {
             margin-bottom: 20px;
         }
+
         .form-floating input {
             border-radius: 10px;
             border: 2px solid #e9ecef;
             transition: all 0.3s ease;
         }
+
         .form-floating input:focus {
             border-color: rgb(179, 85, 7);
             box-shadow: 0 0 0 0.2rem rgba(179, 85, 7, 0.25);
         }
+
         .btn-login {
             background: linear-gradient(45deg, rgb(179, 85, 7), rgb(200, 100, 20));
             border: none;
@@ -76,16 +84,19 @@ if (session_status() === PHP_SESSION_NONE) {
             letter-spacing: 1px;
             transition: all 0.3s ease;
         }
+
         .btn-login:hover {
             background: linear-gradient(45deg, rgb(150, 70, 5), rgb(179, 85, 7));
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(179, 85, 7, 0.3);
         }
+
         .divider {
             text-align: center;
             margin: 25px 0;
             position: relative;
         }
+
         .divider::before {
             content: '';
             position: absolute;
@@ -95,30 +106,37 @@ if (session_status() === PHP_SESSION_NONE) {
             height: 1px;
             background: #ddd;
         }
+
         .divider span {
             background: white;
             padding: 0 15px;
             color: #666;
         }
+
         .register-link {
             text-align: center;
             margin-top: 20px;
         }
+
         .register-link a {
             color: rgb(179, 85, 7);
             text-decoration: none;
             font-weight: bold;
         }
+
         .register-link a:hover {
             text-decoration: underline;
         }
+
         .alert-custom {
             border-radius: 10px;
             margin-bottom: 20px;
         }
+
         .password-toggle {
             position: relative;
         }
+
         .password-toggle .toggle-btn {
             position: absolute;
             right: 15px;
@@ -177,12 +195,12 @@ if (session_status() === PHP_SESSION_NONE) {
         <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
             <ul class="navbar-nav me-auto">
                 <?php
-                if(isset($_SESSION['username'])) {
+                if (isset($_SESSION['username'])) {
                     echo "<li class='nav-item'>
                             <a class='nav-link' href='#'>Chào mừng " . $_SESSION['username'] . "</a>
                           </li>
                           <li class='nav-item'>
-                            <a class='nav-link' href='../logout.php'>Đăng xuất</a>
+                            <a class='nav-link' href='./logout.php'>Đăng xuất</a>
                           </li>";
                 } else {
                     echo "<li class='nav-item'>
@@ -199,11 +217,6 @@ if (session_status() === PHP_SESSION_NONE) {
             </ul>
         </nav>
 
-        <!-- third child -->
-        <div class="bg-light">
-            <h3 class="text-center p-3">Bún đậu Ông Chú</h3>
-            <p class="text-center">Chuyên cung cấp các món bún đậu truyền thống Việt Nam</p>
-        </div>
 
         <!-- Login Form -->
         <div class="login-container">
@@ -214,27 +227,36 @@ if (session_status() === PHP_SESSION_NONE) {
                 </div>
 
                 <?php
-                if(isset($_POST['user_login'])) {
+                if (isset($_POST['user_login'])) {
                     $username = mysqli_real_escape_string($con, $_POST['user_username']);
                     $password = $_POST['user_password'];
-                    
-                    $select_query = "SELECT * FROM user_table WHERE username='$username'";
+
+                    $select_query = "SELECT * FROM user WHERE username='$username'";
                     $result = mysqli_query($con, $select_query);
                     $row_count = mysqli_num_rows($result);
                     $row_data = mysqli_fetch_assoc($result);
-                    
-                    if($row_count > 0) {
-                        if(password_verify($password, $row_data['user_password'])) {
+                    $user_ip = getIPAddress();
+
+                    //cart item
+                    $select_query_cart = "SELECT * FROM cart WHERE ip_address='$user_ip'";
+                    $result_cart = mysqli_query($con, $select_query_cart);
+                    $row_count_cart = mysqli_num_rows($result_cart);
+                    $row_data_cart = mysqli_fetch_assoc($result_cart);
+
+
+                    if ($row_count > 0) {
+                        if (password_verify($password, $row_data['user_password'])) {
                             $_SESSION['username'] = $username;
                             $_SESSION['user_id'] = $row_data['user_id'];
-                            echo "<div class='alert alert-success alert-custom'>
-                                    <i class='fas fa-check-circle'></i> Đăng nhập thành công! Đang chuyển hướng...
-                                  </div>";
-                            echo "<script>
-                                    setTimeout(function() {
-                                        window.location.href = '../index.php';
-                                    }, 1500);
-                                  </script>";
+                            if ($row_count == 1 && $row_count_cart == 0) {
+                                $_SESSION['username'] = $username;
+                                echo "<script>alert('Đăng nhập thành công!');</script>";
+                                echo "<script>window.open('../index.php', '_self');</script>";
+                            } else {
+                                $_SESSION['username'] = $username;
+                                echo "<script>alert('Đăng nhập thành công!');</script>";
+                                echo "<script>window.open('/user/checkout.php', '_self');</script>";
+                            }
                         } else {
                             echo "<div class='alert alert-danger alert-custom'>
                                     <i class='fas fa-exclamation-triangle'></i> Mật khẩu không đúng!
@@ -246,18 +268,23 @@ if (session_status() === PHP_SESSION_NONE) {
                               </div>";
                     }
                 }
+                //cart item
+                $user_ip = getIPAddress();
+                $select_query = "SELECT * FROM cart WHERE ip_address='$user_ip'";
+                $result_query = mysqli_query($con, $select_query);
+                $row_count_query = mysqli_num_rows($result_query);
                 ?>
 
                 <form action="" method="post" id="loginForm">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="user_username" name="user_username" 
-                               placeholder="Tên đăng nhập" autocomplete="username" required>
+                        <input type="text" class="form-control" id="user_username" name="user_username"
+                            placeholder="Tên đăng nhập" autocomplete="username" required>
                         <label for="user_username"><i class="fas fa-user"></i> Tên đăng nhập</label>
                     </div>
 
                     <div class="form-floating password-toggle">
-                        <input type="password" class="form-control" id="user_password" name="user_password" 
-                               placeholder="Mật khẩu" autocomplete="current-password" required>
+                        <input type="password" class="form-control" id="user_password" name="user_password"
+                            placeholder="Mật khẩu" autocomplete="current-password" required>
                         <label for="user_password"><i class="fas fa-lock"></i> Mật khẩu</label>
                         <button type="button" class="toggle-btn" onclick="togglePassword()">
                             <i class="fas fa-eye" id="toggleIcon"></i>
@@ -298,56 +325,56 @@ if (session_status() === PHP_SESSION_NONE) {
     </script>
 
     <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('user_password');
-            const toggleIcon = document.getElementById('toggleIcon');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            }
-        }
+        // function togglePassword() {
+        //     const passwordInput = document.getElementById('user_password');
+        //     const toggleIcon = document.getElementById('toggleIcon');
 
-        function showForgotPassword() {
-            alert('Tính năng quên mật khẩu sẽ được cập nhật trong thời gian tới!');
-        }
+        //     if (passwordInput.type === 'password') {
+        //         passwordInput.type = 'text';
+        //         toggleIcon.classList.remove('fa-eye');
+        //         toggleIcon.classList.add('fa-eye-slash');
+        //     } else {
+        //         passwordInput.type = 'password';
+        //         toggleIcon.classList.remove('fa-eye-slash');
+        //         toggleIcon.classList.add('fa-eye');
+        //     }
+        // }
 
-        // Form validation
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            const username = document.getElementById('user_username').value.trim();
-            const password = document.getElementById('user_password').value;
+        // function showForgotPassword() {
+        //     alert('Tính năng quên mật khẩu sẽ được cập nhật trong thời gian tới!');
+        // }
 
-            if (username.length < 3) {
-                e.preventDefault();
-                alert('Tên đăng nhập phải có ít nhất 3 ký tự!');
-                return;
-            }
+        // // Form validation
+        // document.getElementById('loginForm').addEventListener('submit', function(e) {
+        //     const username = document.getElementById('user_username').value.trim();
+        //     const password = document.getElementById('user_password').value;
 
-            if (password.length < 6) {
-                e.preventDefault();
-                alert('Mật khẩu phải có ít nhất 6 ký tự!');
-                return;
-            }
-        });
+        //     if (username.length < 3) {
+        //         e.preventDefault();
+        //         alert('Tên đăng nhập phải có ít nhất 3 ký tự!');
+        //         return;
+        //     }
+
+        //     if (password.length < 6) {
+        //         e.preventDefault();
+        //         alert('Mật khẩu phải có ít nhất 6 ký tự!');
+        //         return;
+        //     }
+        // });
 
         // Auto hide alerts after 5 seconds
-        setTimeout(function() {
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                if (!alert.classList.contains('alert-success')) {
-                    alert.style.transition = 'opacity 0.5s';
-                    alert.style.opacity = '0';
-                    setTimeout(function() {
-                        alert.remove();
-                    }, 500);
-                }
-            });
-        }, 5000);
+        // setTimeout(function() {
+        //     const alerts = document.querySelectorAll('.alert');
+        //     alerts.forEach(function(alert) {
+        //         if (!alert.classList.contains('alert-success')) {
+        //             alert.style.transition = 'opacity 0.5s';
+        //             alert.style.opacity = '0';
+        //             setTimeout(function() {
+        //                 alert.remove();
+        //             }, 500);
+        //         }
+        //     });
+        // }, 5000);
     </script>
 </body>
 

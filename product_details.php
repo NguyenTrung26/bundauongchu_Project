@@ -1,6 +1,10 @@
 <?php
 include('./includes/connect.php');
 include('./functions/common_func.php');
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 
 if (isset($_GET['product_id'])) {
     $product_id = $_GET['product_id'];
@@ -62,10 +66,10 @@ if (isset($_GET['product_id'])) {
                                                                                                             ?></sup></a>
                     </li>
                     <li class="nav-item">
-                        <a href="" class="nav-link">Total Price: <?php get_total_price(); ?></a>
+                        <a href="cart.php" class="nav-link">Total Price: <?php get_total_price(); ?></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Liên hệ</a>
+                        <a class="nav-link" href="about.php">Liên hệ</a>
                     </li>
 
                 </ul>
@@ -86,18 +90,29 @@ if (isset($_GET['product_id'])) {
     ?>
     <!-- second child -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
-        <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Wekcome Guest</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="./user/user_login.php">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Register</a>
-            </li>
-        </ul>
-    </nav>
+            <ul class="navbar-nav me-auto">
+                <?php
+                if(isset($_SESSION['username'])) {
+                    echo "<li class='nav-item'>
+                            <a class='nav-link' href='#'>Chào mừng " . $_SESSION['username'] . "</a>
+                          </li>
+                          <li class='nav-item'>
+                            <a class='nav-link' href='./user/logout.php'>Đăng xuất</a>
+                          </li>";
+                } else {
+                    echo "<li class='nav-item'>
+                            <a class='nav-link' href='#'>Chào mừng khách</a>
+                          </li>
+                          <li class='nav-item'>
+                            <a class='nav-link' href='user_login.php'>Đăng nhập</a>
+                          </li>
+                          <li class='nav-item'>
+                            <a class='nav-link' href='user_regis.php'>Đăng ký</a>
+                          </li>";
+                }
+                ?>
+            </ul>
+        </nav>
     <div class="container-fluid mt-4">
         <div class="row">
             <!-- Sidebar -->
@@ -106,13 +121,6 @@ if (isset($_GET['product_id'])) {
                 <ul class="navbar-nav">
                     <?php
                     getCategories(); ?>
-                    <li class="nav-item"><a href="#" class="nav-link text-light">🍜 Bún đậu thập cẩm</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link text-light">🥩 Chả cốm, chả cua</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link text-light">🧈 Đậu rán</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link text-light">🐷 Lòng heo</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link text-light">🍖 Thịt luộc</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link text-light">🥤 Nước uống</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link text-light">🍢 Ăn vặt khác</a></li>
                 </ul>
             </div>
 
