@@ -173,8 +173,8 @@ if ((isset($_GET['act'])) && ($_GET['act'] != '')) {
         case 'introduce':
             include './view/introduce.php';
             break;
-        case 'lienhe':
-            include 'view/lienhe.php';
+        case 'contact':
+            include 'view/contact.php';
             break;
         case 'binhluan':
             include 'view/binhluan.php';

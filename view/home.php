@@ -23,12 +23,12 @@
                     </div>
 
                     <div class="mySlides fade">
-                        <img src="view/images/sl2.jpg" alt="Banner 2">
+                        <img src="view/images/sl3.jpg" alt="Banner 2">
                         <div class="caption">Đậm đà bản sắc miền Bắc</div>
                     </div>
 
                     <div class="mySlides fade">
-                        <img src="view/images/sl3.jpg" alt="Banner 3">
+                        <img src="view/images/sl1.jpg" alt="Banner 3">
                         <div class="caption">Bún đậu mắm tôm chuẩn vị Hà Nội</div>
                     </div>
 
