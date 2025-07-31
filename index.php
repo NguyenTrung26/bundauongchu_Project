@@ -1,161 +1,194 @@
 <?php
-include('./includes/connect.php');
-include('./functions/common_func.php');
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+session_start();
+include 'model/pdo.php';
+include 'model/sanpham.php';
+include 'model/danhmuc.php';
+include 'model/taikhoan.php';
+include 'model/cart.php';
+include 'view/header.php';
+// include 'view/introduce.php';
+
+if (!isset($_SESSION['mycart'])) {
+    $_SESSION['mycart'] = [];
 }
 
-?>
-<!DOCTYPE html>
-<html lang="en">
+$spnew = sanpham_loadall_home();
+$dmsp = danhmuc_loadall();
+$dstop10 = sanpham_loadall_top10();
+if ((isset($_GET['act'])) && ($_GET['act'] != '')) {
+    $act = $_GET['act'];
+    switch ($act) {
+        case 'sanpham':
+            if (isset($_POST['kyw']) && ($_POST['kyw'] != "")) {
+                $kyw = $_POST['kyw'];
+            } else {
+                $kyw = "";
+            }
+            if (isset($_GET['iddm']) && ($_GET['iddm'] > 0)) {
+                $iddm = $_GET['iddm'];
+            } else {
+                $iddm = 0;
+            }
+            $dssp = sanpham_loadall($kyw, $iddm);
+            $tendm = load_ten_danhmuc($iddm);
+            include 'view/sanpham.php';
+            break;
+        case 'sanphamct':
+            if (isset($_GET['idsp']) && ($_GET['idsp'] > 0)) {
+                $id = $_GET['idsp'];
+                $onesp = sanpham_loadone($id);
+                extract($onesp);
+                $spcungloai = sanpham_load_cungloai($id, $iddm);
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bún đậu Ông Chú</title>
-    <!-- bootstrap css link -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
-        crossorigin="anonymous">
-    <!-- font awesome link -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- css file -->
-    <!-- <link rel="stylesheet" href="style.css"> -->
-    <link rel="stylesheet" href="stylesuper.css">
-
-</head>
-
-<body>
-
-    <!-- navbar -->
-    <div class="container-fluid p-0">
-        <!-- first child -->
-        <nav class="navbar navbar-expand-lg bg-body-tertiary color-navbar navbar-fixed">
-            <div class="container-fluid container-fluid_nav">
-                <img class="logo-navbar" src="./images/logo.png" alt="">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="index.php">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="display_allproducts.php">Menu</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="cart.php">Giỏ Hàng</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="cart.php" class="nav-link"><i class="fa-solid fa-cart-shopping"></i><sup><?php display_cart_item();
-                                                                                                                ?></sup></a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="cart.php" class="nav-link">Total Price: <?php get_total_price(); ?></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="about.php">Liên hệ</a>
-                        </li>
-
-                    </ul>
-                    <form class="d-flex" role="search" action="search_product.php" method="get">
-                        <input name="search_data" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                        <!-- <button class="btn btn-outline-success" type="submit">Search</button> -->
-                        <input type="submit" name="search_data_product" class="btn btn-outline-success" value="Search">
-                    </form>
-                </div>
-            </div>
-        </nav>
-
-        <!-- cart function -->
-        <?php
-        if (isset($_GET['add_to_cart'])) {
-            $product_id = $_GET['add_to_cart'];
-            addToCart($product_id);
-        }
-        ?>
-        <!-- second child -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
-            <ul class="navbar-nav me-auto">
-                <?php
-                if(isset($_SESSION['username'])) {
-                    echo "<li class='nav-item'>
-                            <a class='nav-link' href='#'>Chào mừng " . $_SESSION['username'] . "</a>
-                          </li>
-                          <li class='nav-item'>
-                            <a class='nav-link' href='./user/logout.php'>Đăng xuất</a>
-                          </li>";
+                include 'view/sanphamct.php';
+            } else {
+                include 'view/home.php';
+            }
+            break;
+        case 'dangky':
+            if (isset($_POST['dangky']) && ($_POST['dangky'])) {
+                $email = $_POST['email'];
+                $user = $_POST['user'];
+                $pass = $_POST['pass'];
+                taikhoan_insert($email, $user, $pass);
+                $thongbao = "Đăng ký thành công";
+            }
+            include 'view/taikhoan/dangky.php';
+            break;
+        case 'dangnhap':
+            if (isset($_POST['dangnhap']) && ($_POST['dangnhap'])) {
+                $user = $_POST['user'];
+                $pass = $_POST['pass'];
+                $tk = checkuser($user, $pass);
+                if (is_array($tk)) {
+                    $_SESSION['user'] = $tk;
+                    // $thongbao = "Đăng nhập thành công";
+                    header('location:index.php');
                 } else {
-                    echo "<li class='nav-item'>
-                            <a class='nav-link' href='#'>Chào mừng khách</a>
-                          </li>
-                          <li class='nav-item'>
-                            <a class='nav-link' href='./user/user_login.php'>Đăng nhập</a>
-                          </li>
-                          <li class='nav-item'>
-                            <a class='nav-link' href='./user/user_regis.php'>Đăng ký</a>
-                          </li>";
+                    $thongbao = "Đăng nhập thất bại";
                 }
-                ?>
-            </ul>
-        </nav>
+            }
+            include 'view/taikhoan/dangnhap.php';
+            break;
+        case 'edit_taikhoan':
+            if (isset($_POST['capnhat']) && ($_POST['capnhat'])) {
+                $user = $_POST['user'];
+                $pass = $_POST['pass'];
+                $email = $_POST['email'];
+                $addr = $_POST['addr'];
+                $phone = $_POST['phone'];
+                $id = $_POST['id'];
+                taikhoan_update($id, $user, $pass, $email, $addr, $phone);
+                $_SESSION['user']=checkuser($user, $pass);
+                // $thongbao = "Cập nhật thành công";
+                header('location:index.php?act=edit_taikhoan');
+            }
+            include 'view/taikhoan/edit_taikhoan.php';
+            break;
+        case 'quenmk':
+            if (isset($_POST['guiemail']) && ($_POST['guiemail'])) {
+                $email = $_POST['email'];
+                $checkemail = quenmk($email);
+                if (is_array($checkemail)) {
+                    $thongbao = "Mật khẩu của bạn là: " . $checkemail['pass'];
+                } else {
+                    $thongbao = "Email không tồn tại";
+                }
+                // $thongbao = "Cập nhật thành công";
+            }
+            include 'view/taikhoan/quenmk.php';
+            break;
+        case 'addtocart':
+            if (isset($_POST['addtocart']) && ($_POST['addtocart'])) {
+                $id = $_POST['id'];
+                $name = $_POST['name'];
+                $img = $_POST['img'];
+                $price = $_POST['price'];
+                $qty = 1;
+                $thanhtien = $price * $qty;
+                $spadd=[$id,$name,$img,$price,$qty,$thanhtien];
+                array_push($_SESSION['mycart'],$spadd);
+                // if (isset($_SESSION['cart'][$id])) {
+                //     $_SESSION['cart'][$id]['qty'] += 1;
+                // } else {
+                //     $_SESSION['cart'][$id] = array('id' => $id, 'name' => $name, 'img' => $img, 'price' => $price, 'qty' => $qty);
+                // }
+            }
+            include 'view/cart/viewcart.php';
+            break;
+        case 'delcart':
+            if (isset($_GET['idcart'])) {
+                $idcart = $_GET['idcart'];
+                unset($_SESSION['mycart'][$idcart]);
+                $_SESSION['mycart'] = array_values($_SESSION['mycart']); // Reindex the array
+            } else {
+                unset($_SESSION['mycart']);
+            }
 
-        <!-- third child -->
-        <div class="bg-light">
-            <h3 class="text-center p-3">Bún đậu Ông Chú</h3>
-            <p class="text-center">Chuyên cung cấp các món bún đậu truyền thống Việt Nam</p>
-        </div>
+            header('location:index.php?act=viewcart');
+            break;
+        case 'viewcart':
+            include 'view/cart/viewcart.php';
+            break;
+        case 'bill':
+            include 'view/cart/bill.php';
+            break;
+        case 'billconfirm':
+            //tao bill
+            if (isset($_POST['dongydathang']) && ($_POST['dongydathang'])) {
+                if(isset($_SESSION['user'])) $iduser=$_SESSION['user']['id'];
+                else $iduser=0;
+                $name=$_POST['user'];
+                $addr=$_POST['addr'];
+                $phone=$_POST['phone'];
+                $email=$_POST['email'];
+                $pttt=$_POST['pttt'];
+                $ngaydathang=date('h:i:s d/m/Y');
+                $tongdonhang=tongdonhang();
 
-        <!-- fourth child -->
-        <div class="row px-3">
-            <!-- Sản phẩm -->
-            <div class="col-md-10">
-                <div class="row">
-                    <?php
-                    //display products
-                    getProducts();
-                    get_uni_categories();
-                    // $ip = getIPAddress();
-                    // echo 'User Real IP Address - ' . $ip;
-                    ?>
-                </div>
-            </div>
+                $idbill=insert_bill($iduser,$name, $addr, $phone, $email, $pttt, $ngaydathang, $tongdonhang);
 
-            <!-- Sidebar -->
-            <div class="col-md-2 bg-secondary p-0">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item" style="background-color:rgb(179, 85, 7) !important;">
-                        <a href="#" class="nav-link text-light text-center py-2">
-                            <h5 class="mb-0">🍽 MENU</h5>
-                        </a>
-                    </li>
-                    <?php
-                    // Hiển thị danh sách danh mục
-                    getCategories();
-                    ?>
-                </ul>
-            </div>
-        </div>
-
-        <!-- last child -->
-        <?php include('./includes/footer.php'); ?>
-
-    </div>
+                //insert into cart : $session['mycart'] & $idbill
+                foreach ($_SESSION['mycart'] as $cart) {
+                    
+                    insert_cart($_SESSION['user']['id'],$cart[0],$cart[2],$cart[1],$cart[3],$cart[4],$cart[5],$idbill);
+                }
+                $_SESSION['mycart']=[];
+                // header('location:index.php?act=billconfirm&idbill='.$idbill);
 
 
+            }
+            $bill=loadone_bill($idbill);
+            $billct=loadall_cart($idbill);
+            include 'view/cart/billconfirm.php';
+            break;
+        case 'mybill':
+            $listbill = loadall_bill($_SESSION['user']['id']);
+            include 'view/cart/mybill.php';
+            break;
+        case 'thoat':
+            unset($_SESSION['user']);
+            header('location:index.php');
+            break;
+        case 'introduce':
+            include './view/introduce.php';
+            break;
+        case 'lienhe':
+            include 'view/lienhe.php';
+            break;
+        case 'binhluan':
+            include 'view/binhluan.php';
+            break;
+        case 'hoidap':
+            include 'view/hoidap.php';
+            break;
+        default:
+            include 'view/home.php';
+            break;
+    }
+} else {
+    include 'view/home.php';
+}
+include 'view/footer.php';
 
-
-
-
-    <!-- bootstrap js link -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-        crossorigin="anonymous">
-    </script>
-</body>
-
-</html>
+?>

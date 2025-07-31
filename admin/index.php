@@ -1,115 +1,189 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+include '../model/pdo.php';
+include '../model/danhmuc.php';
+include '../model/sanpham.php';
+include '../model/taikhoan.php';
+include '../model/binhluan.php';
+include '../model/cart.php';
+include 'header.php';
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Bún đậu Ông Chú</title>
-   <?php
-    include('link.php');
-   ?>
-</head>
+if (isset($_GET['act'])) {
+    $act = $_GET['act'];
+    switch ($act) {
+            // danhmuc
 
-<body>
-    <!-- navbar -->
-    <div class="container-fluid p-0">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-info px-4">
-            <img src="../images/logo.png" class="logo me-3" alt="" style="height: 40px;">
-            <a class="navbar-brand fw-bold text-white" href="#">Admin Bún đậu Ông Chú</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav gap-3">
-                    <li class="nav-item"><a class="nav-link text-white" href="index.php">Trang chủ</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="orders.php">Đơn hàng</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="menu.php">Thực đơn</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="customers.php">Khách hàng</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="logout.php">Đăng xuất</a></li>
-                </ul>
-            </div>
-            <!-- Toggle Light/Dark Mode -->
-            <div class="form-check form-switch text-white ms-3">
-                <input class="form-check-input" type="checkbox" id="modeToggle">
-                <label class="form-check-label" for="modeToggle">Dark mode</label>
-            </div>
-
-        </nav>
-
-        <!-- second child -->
-        <div class="bg-light py-3 border-bottom shadow-sm">
-            <h3 class="text-center">Quản lý hệ thống</h3>
-        </div>
-
-        <!-- third child -->
-        <div class="row m-0">
-            <div class="col-md-12 bg-secondary text-center text-light py-3">
-                <p class="mb-0 fs-5">Bún đậu Ông Chú - Quản lý đơn hàng, thực đơn và khách hàng</p>
-            </div>
-            <div class="button text-center my-4">
-                <div class="d-flex flex-wrap gap-3 justify-content-center">
-                    <a href="index.php?insert_product" class="btn btn-info text-white">Thêm sản phẩm</a>
-                    <a href="index.php?view_products" class="btn btn-outline-info">Xem sản phẩm</a>
-                    <a href="index.php?insert_cate" class="btn btn-info text-white">Thêm danh mục</a>
-                    <a href="#" class="btn btn-outline-info">Xem danh mục</a>
-                    <a href="#" class="btn btn-outline-info">Tất cả đơn hàng</a>
-                    <a href="#" class="btn btn-outline-info">Tất cả khách hàng</a>
-                    <a href="#" class="btn btn-outline-info">Tất cả danh mục</a>
-                    <a href="#" class="btn btn-outline-info">Thanh toán</a>
-                    <a href="logout.php" class="btn btn-danger">Đăng xuất</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- fourth child -->
-        <div class="container my-3">
-            <?php
-            if (isset($_GET['insert_cate'])) {
-                include('insert_cate.php');
+        case 'adddm':
+            //check người dùng có nhập dữ liệu hay không
+            if (isset($_POST['themmoi']) && ($_POST['themmoi'])) {
+                $tenloai = $_POST['tenloai'];
+                danhmuc_insert($tenloai);
+                $thongbao = "Thêm mới thành công";
             }
-            if (isset($_GET['insert_product'])) {
-                include('insert_product.php');
+            include 'danhmuc/add.php';
+            break;
+
+        case 'listdm':
+            $listdanhmuc = danhmuc_loadall();
+            include 'danhmuc/list.php';
+            break;
+
+        case 'xoadm':
+            if (isset($_GET['id']) && ($_GET['id'] > 0)) {
+                danhmuc_delete($_GET['id']);
             }
-            if (isset($_GET['view_products'])) {
-                include('view_products.php');
+            $listdanhmuc = danhmuc_loadall();
+            include 'danhmuc/list.php';
+            break;
+
+        case 'suadm':
+            if (isset($_GET['id']) && ($_GET['id'] > 0)) {
+                $danhmuc = danhmuc_loadone($_GET['id']);
             }
-            ?>
-        </div>
-    </div>
+            include 'danhmuc/update.php';
+            break;
+        case 'updatedm':
+            if (isset($_POST['capnhat']) && ($_POST['capnhat'])) {
+                $id = $_POST['id'];
+                $tenloai = $_POST['tenloai'];
+                danhmuc_update($id, $tenloai);
+                $thongbao = "Cập nhật thành công";
+            }
+            $listdanhmuc = danhmuc_loadall();
+            include 'danhmuc/list.php';
+            break;
+        case 'dskh':
+            $listtaikhoan = taikhoan_loadall();
+            include 'taikhoan/list.php';
+            break;
+        case 'dsbl':
+            $listbinhluan = loadall_binhluan(0);
+            include 'binhluan/listbinhluan.php';
+            break;
+        case 'xoabl':
+            if (isset($_GET['id']) && ($_GET['id'] > 0)) {
+                $sql="delete from binhluan where id=".$_GET['id'];
+                pdo_execute($sql);
+            }
+            $listbinhluan = loadall_binhluan(0);
+            include 'binhluan/listbinhluan.php';
+            break;
+        // case 'thongke':
+        //     include 'thongke.php';
+        //     break;
 
-    <!-- footer -->
-    <div class="bg-info text-center text-lg-start footer">
-        <div class="text-center p-3">
-            © 2023 Bún đậu Ông Chú. All rights reserved.
-        </div>
-    </div>
+        //     // sanphamaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
-    
-    <script>
-        const toggleSwitch = document.getElementById('modeToggle');
-        const body = document.body;
+        case 'addsp':
+            // Check if the user has submitted the form
+            if (isset($_POST['themmoi']) && ($_POST['themmoi'])) {
+                $iddm = $_POST['iddm'];
+                $name = $_POST['name'];
+                $price = $_POST['price'];
+                $describe = $_POST['describe'];
+                $filename = $_FILES['img']['name'];
+                $target_dir = "upload/";
+                $target_file = $target_dir . basename($_FILES["img"]["name"]);
 
-        // Kiểm tra lưu trong localStorage
-        if (localStorage.getItem('dark-mode') === 'enabled') {
-            body.classList.add('dark-mode');
-            toggleSwitch.checked = true;
-        }
+                // Ensure the upload directory exists
+                if (!is_dir($target_dir)) {
+                    mkdir($target_dir, 0777, true);
+                }
 
-        toggleSwitch.addEventListener('change', () => {
-            if (toggleSwitch.checked) {
-                body.classList.add('dark-mode');
-                localStorage.setItem('dark-mode', 'enabled');
+                if (move_uploaded_file($_FILES["img"]["tmp_name"], $target_file)) {
+                    // File uploaded successfully
+                } else {
+                    // Handle the error
+                    echo "Sorry, there was an error uploading your file.";
+                }
+
+                sanpham_insert($name, $price, $describe, $filename, $iddm);
+                $thongbao = "Thêm mới thành công";
+            }
+            $listdanhmuc = danhmuc_loadall();
+            include 'sanpham/add.php';
+            break;
+
+        case 'listsp':
+            if (isset($_POST['listok']) && ($_POST['listok'])) {
+                $keyw = $_POST['keyw'];
+                $iddm = $_POST['iddm'];
             } else {
-                body.classList.remove('dark-mode');
-                localStorage.setItem('dark-mode', 'disabled');
+                $keyw = "";
+                $iddm = 0;
             }
-        });
-    </script>
+            $listdanhmuc = danhmuc_loadall();
+            $listsanpham = sanpham_loadall($keyw, $iddm);
+            include 'sanpham/list.php';
+            break;
 
-    
-</body>
+        case 'xoasp':
+            if (isset($_GET['id']) && ($_GET['id'] > 0)) {
+                sanpham_delete($_GET['id']);
+            }
+            $listsanpham = sanpham_loadall("", 0);
+            include 'sanpham/list.php';
+            break;
+
+        case 'suasp':
+            if (isset($_GET['id']) && ($_GET['id'] > 0)) {
+                $sanpham = sanpham_loadone($_GET['id']);
+            }
+            $listdanhmuc = danhmuc_loadall();
+            include 'sanpham/update.php';
+            break;
+        case 'updatesp':
+            if (isset($_POST['capnhat']) && ($_POST['capnhat'])) {
+                $id = $_POST['id'];
+                $name = $_POST['tensp'];
+                $price = $_POST['giasp'];
+                $describe = $_POST['motasp'];
+                $filename = $_FILES['hinhsp']['name'];
+                $iddm = $_POST['iddm'];
+                $target_dir = "upload/";
+                $target_file = $target_dir . basename($_FILES["hinhsp"]["name"]);
+                if (move_uploaded_file($_FILES["hinhsp"]["tmp_name"], $target_file)) {
+                    // File uploaded successfully
+                } else {
+                    // Handle the error
+                    echo "Sorry, there was an error uploading your file.";
+                }
+
+                sanpham_update($id, $name, $price, $describe, $filename, $iddm);
+                $thongbao = "Cập nhật thành công";
+            }
+            $listsanpham = sanpham_loadall("", 0);
+            include 'sanpham/list.php';
+            break;
+        case 'thongke':
+            $listthongke=loadall_thongke();
+            include 'thongke/list.php';
+            break;
+        case 'bieudo':
+            
+            include 'thongke/bieudo.php';
+            break;
+        case 'listbill':
+            if(isset($_POST['kyw']) && ($_POST['kyw']!="")){
+                $kyw=$_POST['kyw'];
+            }else{
+                $kyw="";
+            }
+            $listbill=loadall_bill($kyw,0);
+            include 'bill/listbill.php';
+            break;
+
+        default:
+        $listthongke=loadall_thongke();
+            include 'home.php';
+    }
+} else {
+    $listthongke=loadall_thongke();
+    include 'home.php';
+}
 
 
-</html>
+
+
+include 'footer.php';
+?>
+
