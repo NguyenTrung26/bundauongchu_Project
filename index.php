@@ -79,7 +79,7 @@ if ((isset($_GET['act'])) && ($_GET['act'] != '')) {
                 $phone = $_POST['phone'];
                 $id = $_POST['id'];
                 taikhoan_update($id, $user, $pass, $email, $addr, $phone);
-                $_SESSION['user']=checkuser($user, $pass);
+                $_SESSION['user'] = checkuser($user, $pass);
                 // $thongbao = "Cập nhật thành công";
                 header('location:index.php?act=edit_taikhoan');
             }
@@ -106,8 +106,8 @@ if ((isset($_GET['act'])) && ($_GET['act'] != '')) {
                 $price = $_POST['price'];
                 $qty = 1;
                 $thanhtien = $price * $qty;
-                $spadd=[$id,$name,$img,$price,$qty,$thanhtien];
-                array_push($_SESSION['mycart'],$spadd);
+                $spadd = [$id, $name, $img, $price, $qty, $thanhtien];
+                array_push($_SESSION['mycart'], $spadd);
                 // if (isset($_SESSION['cart'][$id])) {
                 //     $_SESSION['cart'][$id]['qty'] += 1;
                 // } else {
@@ -131,37 +131,82 @@ if ((isset($_GET['act'])) && ($_GET['act'] != '')) {
             include 'view/cart/viewcart.php';
             break;
         case 'bill':
-            include 'view/cart/bill.php';
-            break;
-        case 'billconfirm':
-            //tao bill
-            if (isset($_POST['dongydathang']) && ($_POST['dongydathang'])) {
-                if(isset($_SESSION['user'])) $iduser=$_SESSION['user']['id'];
-                else $iduser=0;
-                $name=$_POST['user'];
-                $addr=$_POST['addr'];
-                $phone=$_POST['phone'];
-                $email=$_POST['email'];
-                $pttt=$_POST['pttt'];
-                $ngaydathang=date('h:i:s d/m/Y');
-                $tongdonhang=tongdonhang();
+            if (isset($_POST['apply_discount'])) {
+                $code = trim($_POST['discount_code']);
+                include "model/discount.php";
 
-                $idbill=insert_bill($iduser,$name, $addr, $phone, $email, $pttt, $ngaydathang, $tongdonhang);
+                $discount = checkDiscountCode($code);
 
-                //insert into cart : $session['mycart'] & $idbill
-                foreach ($_SESSION['mycart'] as $cart) {
-                    
-                    insert_cart($_SESSION['user']['id'],$cart[0],$cart[2],$cart[1],$cart[3],$cart[4],$cart[5],$idbill);
+                if ($discount) {
+                    $_SESSION['discount_percent'] = $discount['discount_percent'];
+                    $_SESSION['discount_code'] = $discount['code'];
+                    $msg = "<p style='color:green'>Áp dụng mã giảm giá thành công: -{$discount['discount_percent']}%</p>";
+                } else {
+                    unset($_SESSION['discount_percent'], $_SESSION['discount_code']);
+                    $msg = "<p style='color:red'>Mã giảm giá không hợp lệ hoặc đã hết hạn!</p>";
                 }
-                $_SESSION['mycart']=[];
-                // header('location:index.php?act=billconfirm&idbill='.$idbill);
-
-
             }
-            $bill=loadone_bill($idbill);
-            $billct=loadall_cart($idbill);
-            include 'view/cart/billconfirm.php';
+            include "view/cart/bill.php";
             break;
+
+        case 'billconfirm':
+            if (isset($_POST['dongydathang']) && ($_POST['dongydathang'])) {
+                if (isset($_SESSION['user'])) $iduser = $_SESSION['user']['id'];
+                else $iduser = 0;
+
+                $name = $_POST['user'];
+                $addr = $_POST['addr'];
+                $phone = $_POST['phone'];
+                $email = $_POST['email'];
+                $pttt = $_POST['pttt'];
+                $ngaydathang = date('Y-m-d H:i:s');
+                $tongdonhang = tongdonhang();
+
+                // Lấy thông tin giảm giá từ session
+                $discount_percent = $_SESSION['discount_percent'] ?? 0;
+                $discount_code = $_SESSION['discount_code'] ?? '';
+                $giamgia = ($tongdonhang * $discount_percent) / 100;
+                $total_final = $tongdonhang - $giamgia;
+
+                // Lưu vào bill
+                $idbill = insert_bill(
+                    $iduser,
+                    $name,
+                    $addr,
+                    $phone,
+                    $email,
+                    $pttt,
+                    $ngaydathang,
+                    $tongdonhang,
+                    $discount_code,
+                    $discount_percent,
+                    $total_final
+                );
+
+                // insert giỏ hàng
+                foreach ($_SESSION['mycart'] as $cart) {
+                    insert_cart(
+                        $_SESSION['user']['id'] ?? 0,
+                        $cart[0],
+                        $cart[2],
+                        $cart[1],
+                        $cart[3],
+                        $cart[4],
+                        $cart[5],
+                        $idbill
+                    );
+                }
+
+                // clear session cart + discount
+                $_SESSION['mycart'] = [];
+                unset($_SESSION['discount_percent'], $_SESSION['discount_code']);
+            }
+
+            $bill = loadone_bill($idbill);
+            $billct = loadall_cart($idbill);
+            include "view/cart/billconfirm.php";
+            break;
+
         case 'mybill':
             $listbill = loadall_bill($_SESSION['user']['id']);
             include 'view/cart/mybill.php';
@@ -190,5 +235,3 @@ if ((isset($_GET['act'])) && ($_GET['act'] != '')) {
     include 'view/home.php';
 }
 include 'view/footer.php';
-
-?>

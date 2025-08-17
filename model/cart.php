@@ -23,10 +23,12 @@ function viewcart($del)
         $thanhtien = htmlspecialchars($cart[5]);
         $tongtien += $thanhtien;
 
-        $xoasp_td = $del == 1 ? '<td><a href="index.php?act=delcart&idcart=' . $i . '"><button type="button">Xóa</button></a></td>' : '<td></td>';
+        $xoasp_td = $del == 1 
+            ? '<td><a href="index.php?act=delcart&idcart=' . $i . '"><button type="button">Xóa</button></a></td>' 
+            : '<td></td>';
 
         echo '<tr>
-                <td><img src="view/images/' . $img . '" alt=""></td>
+                <td><img src="view/images/' . $img . '" alt="" width="80"></td>
                 <td>' . htmlspecialchars($cart[1]) . '</td>
                 <td>' . $price . '</td>
                 <td><input type="number" value="' . $qty . '" min="1" max="10"></td>
@@ -36,13 +38,32 @@ function viewcart($del)
         $i++;
     }
 
+    // --- Tổng tiền gốc ---
     echo '<tr>
             <td colspan="4">Tổng tiền</td>
             <td>' . $tongtien . '</td>
             ' . $xoasp_td2 . '
         </tr>';
+
+    // --- Nếu có mã giảm giá ---
+    if (isset($_SESSION['discount_percent']) && $_SESSION['discount_percent'] > 0) {
+        $discount_percent = $_SESSION['discount_percent'];
+        $discount_amount = $tongtien * $discount_percent / 100;
+        $total_final = $tongtien - $discount_amount;
+
+        echo '<tr>
+                <td colspan="4">Giảm giá (' . $discount_percent . '%)</td>
+                <td>-' . $discount_amount . '</td>
+            </tr>';
+        echo '<tr>
+                <td colspan="4"><b>Thành tiền sau giảm</b></td>
+                <td><b>' . $total_final . '</b></td>
+            </tr>';
+    }
+
     echo '</table>';
 }
+
 function bill_chi_tiet($listbill)
 {
     $tongtien = 0;
@@ -88,11 +109,13 @@ function tongdonhang()
     return $tongtien;
 }
 
-function insert_bill($iduser, $name, $addr, $phone, $email, $pttt, $ngaydathang, $tongdonhang)
-{
-    $sql = "INSERT INTO bill (iduser,bill_name, bill_addr, bill_phone, bill_email, bill_pttt, ngaydathang, total) VALUES ('$iduser','$name', '$addr', '$phone', '$email', '$pttt', '$ngaydathang', '$tongdonhang')";
-    return pdo_execute_return_lastInsertId($sql);
+function insert_bill($iduser, $name, $addr, $phone, $email, $pttt, $ngaydathang, $total, $discount_code, $discount_percent, $total_final) {
+    $sql = "INSERT INTO bill(iduser, bill_name, bill_addr, bill_phone, bill_email, bill_pttt, ngaydathang, total, discount_code, discount_percent, total_final) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    return pdo_execute_return_lastInsertId($sql, $iduser, $name, $addr, $phone, $email, $pttt, $ngaydathang, $total, $discount_code, $discount_percent, $total_final);
 }
+
+
 
 function insert_cart($iduser, $idpro, $img, $name, $price, $soluong, $thanhtien, $idbill)
 {

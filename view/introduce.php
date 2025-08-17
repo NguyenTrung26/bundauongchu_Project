@@ -317,34 +317,6 @@
                         <div class="avatar-container">
                             <div class="avatar-ring">
                                 <div class="avatar-image">
-                                    <img src="/view/images/xnhi.png" alt="Ông Chú Hùng Okio">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="team-info">
-                        <h3 class="team-name">Xuân Nhi</h3>
-                        <p class="team-role">Nhân viên phục vụ</p>
-                        <p class="team-description">
-                            Với nụ cười thân thiện và thái độ nhiệt tình, Chị Hoa luôn mang đến cảm giác ấm áp cho mọi khách hàng.
-                            Chị hiểu rõ thực đơn và luôn tư vấn món ăn phù hợp nhất.
-                        </p>
-                        <div class="team-skills">
-                            <span class="skill-tag">Phục vụ chuyên nghiệp</span>
-                            <span class="skill-tag">Tư vấn thực đơn</span>
-                            <span class="skill-tag">Chăm sóc khách hàng</span>
-                        </div>
-                        <div class="team-contact">
-                            <a href="#" class="contact-link">📞</a>
-                            <a href="#" class="contact-link">💬</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="team-card fade-in">
-                    <div class="team-avatar">
-                        <div class="avatar-container">
-                            <div class="avatar-ring">
-                                <div class="avatar-image">
                                     <img src="/view/images/yennhi.png" alt="Ông Chú Hùng Okio">
                                 </div>
                             </div>
@@ -352,34 +324,6 @@
                     </div>
                     <div class="team-info">
                         <h3 class="team-name">Yến Nhi</h3>
-                        <p class="team-role">Nhân viên phục vụ</p>
-                        <p class="team-description">
-                            Với nụ cười thân thiện và thái độ nhiệt tình, Chị Hoa luôn mang đến cảm giác ấm áp cho mọi khách hàng.
-                            Chị hiểu rõ thực đơn và luôn tư vấn món ăn phù hợp nhất.
-                        </p>
-                        <div class="team-skills">
-                            <span class="skill-tag">Phục vụ chuyên nghiệp</span>
-                            <span class="skill-tag">Tư vấn thực đơn</span>
-                            <span class="skill-tag">Chăm sóc khách hàng</span>
-                        </div>
-                        <div class="team-contact">
-                            <a href="#" class="contact-link">📞</a>
-                            <a href="#" class="contact-link">💬</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="team-card fade-in">
-                    <div class="team-avatar">
-                        <div class="avatar-container">
-                            <div class="avatar-ring">
-                                <div class="avatar-image">
-                                    <img src="/view/images/duong.png" alt="Ông Chú Hùng Okio">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="team-info">
-                        <h3 class="team-name">Dương</h3>
                         <p class="team-role">Nhân viên phục vụ</p>
                         <p class="team-description">
                             Với nụ cười thân thiện và thái độ nhiệt tình, Chị Hoa luôn mang đến cảm giác ấm áp cho mọi khách hàng.
@@ -452,35 +396,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="team-card fade-in">
-                    <div class="team-avatar">
-                        <div class="avatar-container">
-                            <div class="avatar-ring">
-                                <div class="avatar-image">
-                                    <img src="/view/images/duyen.png" alt="Ông Chú Hùng Okio">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="team-info">
-                        <h3 class="team-name">Duyên</h3>
-                        <p class="team-role">Nhân viên phục vụ</p>
-                        <p class="team-description">
-                            Với nụ cười thân thiện và thái độ nhiệt tình, Chị Hoa luôn mang đến cảm giác ấm áp cho mọi khách hàng.
-                            Chị hiểu rõ thực đơn và luôn tư vấn món ăn phù hợp nhất.
-                        </p>
-                        <div class="team-skills">
-                            <span class="skill-tag">Phục vụ chuyên nghiệp</span>
-                            <span class="skill-tag">Tư vấn thực đơn</span>
-                            <span class="skill-tag">Chăm sóc khách hàng</span>
-                        </div>
-                        <div class="team-contact">
-                            <a href="#" class="contact-link">📞</a>
-                            <a href="#" class="contact-link">💬</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </div>  
         </div>
     </section>
 
