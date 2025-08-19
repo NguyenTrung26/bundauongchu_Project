@@ -234,4 +234,138 @@ if ((isset($_GET['act'])) && ($_GET['act'] != '')) {
 } else {
     include 'view/home.php';
 }
+
 include 'view/footer.php';
+?>
+<!-- Nút bong bóng -->
+<div id="chat-toggle" style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    color: #fff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+">💬</div>
+<!-- Khung chat -->
+<div id="chatbox" style="
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    border: 1px solid #ccc;
+    width: 300px;
+    background: #fff;
+    padding: 10px;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    z-index: 999;
+">
+    <div id="messages" style="height:250px; overflow-y:auto; margin-bottom:10px;"></div>
+    <div id="chat-input" style="display:flex; gap:5px;">
+        <input type="text" id="userInput" placeholder="Nhập tin nhắn..." style="flex:1; padding:5px;">
+        <button onclick="sendMessage()">Gửi</button>
+    </div>
+</div>
+
+<!-- Nút bật/tắt chat -->
+<div id="chat-toggle" style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 24px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+">
+💬
+</div>
+
+<script>
+    let chatbox = document.getElementById("chatbox");
+    let toggleBtn = document.getElementById("chat-toggle");
+
+    // Ẩn chatbox ban đầu
+    chatbox.style.transform = "translateY(20px)";
+    chatbox.style.opacity = "0";
+    chatbox.style.transition = "all 0.3s ease";
+    chatbox.style.display = "none";
+
+    // Toggle mở/đóng
+    toggleBtn.addEventListener("click", function() {
+        if (chatbox.style.display === "none" || chatbox.style.opacity === "0") {
+            chatbox.style.display = "block";
+            setTimeout(() => {
+                chatbox.style.transform = "translateY(0)";
+                chatbox.style.opacity = "1";
+            }, 10);
+            loadHistory(); // 👉 load lịch sử khi mở
+        } else {
+            chatbox.style.transform = "translateY(20px)";
+            chatbox.style.opacity = "0";
+            setTimeout(() => {
+                chatbox.style.display = "none";
+            }, 300);
+        }
+    });
+
+    // Hàm gửi tin nhắn
+    function sendMessage() {
+        let msg = document.getElementById("userInput").value;
+        if (!msg.trim()) return;
+
+        fetch("chatbot.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "message=" + encodeURIComponent(msg)
+            })
+            .then(res => res.json())
+            .then(data => {
+                let messages = document.getElementById("messages");
+                messages.innerHTML += `<div class="message user"><b>Bạn:</b> ${msg}</div>`;
+                messages.innerHTML += `<div class="message bot"><b>Bot:</b> ${data.reply}</div>`;
+                messages.scrollTop = messages.scrollHeight;
+                document.getElementById("userInput").value = "";
+            });
+    }
+
+    // Ấn Enter để gửi tin nhắn
+    document.getElementById("userInput").addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            sendMessage();
+        }
+    });
+
+    // 👉 Hàm load lịch sử chat
+    function loadHistory() {
+        fetch("chat_history.php")
+            .then(res => res.json())
+            .then(data => {
+                let messages = document.getElementById("messages");
+                messages.innerHTML = "";
+                data.forEach(row => {
+                    messages.innerHTML += `<div class="message ${row.role}">
+                        <b>${row.role === "user" ? "Bạn" : "Bot"}:</b> ${row.message}
+                    </div>`;
+                });
+                messages.scrollTop = messages.scrollHeight;
+            });
+    }
+</script>
