@@ -387,7 +387,7 @@
     </style>
 </head>
 <body>
-    <a href="#" class="back-home">← Trang chủ</a>
+    <a href="index.php" class="back-home">← Trang chủ</a>
     
     <div class="container">
         <div class="header">

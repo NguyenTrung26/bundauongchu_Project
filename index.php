@@ -224,8 +224,8 @@ if ((isset($_GET['act'])) && ($_GET['act'] != '')) {
         case 'binhluan':
             include 'view/binhluan.php';
             break;
-        case 'hoidap':
-            include 'view/hoidap.php';
+        case 'faq':
+            include 'view/faq.php';
             break;
         default:
             include 'view/home.php';
@@ -237,135 +237,213 @@ if ((isset($_GET['act'])) && ($_GET['act'] != '')) {
 
 include 'view/footer.php';
 ?>
-<!-- Nút bong bóng -->
-<div id="chat-toggle" style="
+<!-- CSS -->
+<style>
+/* Nút bong bóng tròn ở góc */
+#chat-toggle {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background: #007bff;
-    color: #fff;
-    border-radius: 50%;
     width: 60px;
     height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d16c07ff, #ffcf11ff);
+    color: white;
+    font-size: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    z-index: 1000;
-">💬</div>
-<!-- Khung chat -->
-<div id="chatbox" style="
-    position: fixed;
-    bottom: 90px;
-    right: 20px;
-    border: 1px solid #ccc;
-    width: 300px;
-    background: #fff;
-    padding: 10px;
-    display: none;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
     z-index: 999;
-">
-    <div id="messages" style="height:250px; overflow-y:auto; margin-bottom:10px;"></div>
-    <div id="chat-input" style="display:flex; gap:5px;">
-        <input type="text" id="userInput" placeholder="Nhập tin nhắn..." style="flex:1; padding:5px;">
-        <button onclick="sendMessage()">Gửi</button>
+    transition: all 0.3s ease;
+}
+
+/* Hiệu ứng hover */
+#chat-toggle:hover {
+    transform: scale(1.1) rotate(8deg);
+    background: linear-gradient(135deg, #ffcf11ff, #d16c07ff);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+/* Icon SVG bên trong */
+#chat-toggle svg {
+    width: 28px;
+    height: 28px;
+    fill: white;
+}
+
+/* Khung chat */
+#chat-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 380px;
+    height: 500px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    display: none;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    background: #fff;
+    z-index: 998;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.4s ease;
+}
+#chat-container.show {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#chat-header {
+    background: #db8307ff;
+    color: white;
+    padding: 12px;
+    font-weight: bold;
+    text-align: center;
+    position: relative;
+}
+#chat-header button {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+#chat-box {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background: #f9f9f9;
+}
+
+.msg {
+    margin: 8px 0;
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 15px;
+    max-width: 75%;
+    line-height: 1.4em;
+    word-wrap: break-word;
+}
+.user {
+    background: #ae6512ff;
+    color: white;
+    border-bottom-right-radius: 0;
+    float: right;
+    clear: both;
+}
+.bot {
+    background: #e5e5ea;
+    color: black;
+    border-bottom-left-radius: 0;
+    float: left;
+    clear: both;
+}
+
+#chat-input {
+    display: flex;
+    border-top: 1px solid #ddd;
+    background: #fff;
+}
+#message {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+#send-btn {
+    padding: 0 20px;
+    border: none;
+    background: #fca817ff;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+#send-btn:hover {
+    background: #b35a00ff;
+}
+</style>
+
+<!-- HTML -->
+<div id="chat-toggle">
+    <!-- Icon Chat SVG -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M20 2H4C2.897 2 2 2.897 2 4V22L6 18H20C21.103 18 22 17.103 22 16V4C22 2.897 21.103 2 20 2z"/>
+    </svg>
+</div>
+
+<div id="chat-container">
+    <div id="chat-header">
+        💬 Trợ lý AI - Quán Bún Đậu
+        <button onclick="toggleChat()">✖</button>
+    </div>
+    <div id="chat-box"></div>
+    <div id="chat-input">
+        <input type="text" id="message" placeholder="Nhập tin nhắn..." onkeypress="checkEnter(event)">
+        <button id="send-btn" onclick="sendMessage()">Gửi</button>
     </div>
 </div>
 
-<!-- Nút bật/tắt chat -->
-<div id="chat-toggle" style="
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #007bff;
-    color: #fff;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 24px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-">
-💬
-</div>
-
+<!-- JS -->
 <script>
-    let chatbox = document.getElementById("chatbox");
-    let toggleBtn = document.getElementById("chat-toggle");
+function toggleChat() {
+    let chat = document.getElementById("chat-container");
+    if (chat.classList.contains("show")) {
+        chat.classList.remove("show");
+        setTimeout(()=>{ chat.style.display="none"; }, 400);
+    } else {
+        chat.style.display = "flex";
+        setTimeout(()=>{ chat.classList.add("show"); }, 10);
+    }
+}
+document.getElementById("chat-toggle").addEventListener("click", toggleChat);
 
-    // Ẩn chatbox ban đầu
-    chatbox.style.transform = "translateY(20px)";
-    chatbox.style.opacity = "0";
-    chatbox.style.transition = "all 0.3s ease";
-    chatbox.style.display = "none";
+function sendMessage() {
+    let msg = document.getElementById("message").value.trim();
+    if(msg==="") return;
 
-    // Toggle mở/đóng
-    toggleBtn.addEventListener("click", function() {
-        if (chatbox.style.display === "none" || chatbox.style.opacity === "0") {
-            chatbox.style.display = "block";
-            setTimeout(() => {
-                chatbox.style.transform = "translateY(0)";
-                chatbox.style.opacity = "1";
-            }, 10);
-            loadHistory(); // 👉 load lịch sử khi mở
-        } else {
-            chatbox.style.transform = "translateY(20px)";
-            chatbox.style.opacity = "0";
-            setTimeout(() => {
-                chatbox.style.display = "none";
-            }, 300);
-        }
+    let chatBox = document.getElementById("chat-box");
+
+    // Hiển thị tin nhắn user
+    let userMsg = document.createElement("div");
+    userMsg.className = "msg user";
+    userMsg.innerHTML = msg;
+    chatBox.appendChild(userMsg);
+
+    // Gửi lên server
+    fetch("chat.php", {
+        method:"POST",
+        headers: {"Content-Type":"application/x-www-form-urlencoded"},
+        body: "message=" + encodeURIComponent(msg)
+    })
+    .then(res=>res.text())
+    .then(reply=>{
+        let botMsg = document.createElement("div");
+        botMsg.className = "msg bot";
+        botMsg.innerHTML = reply;
+        chatBox.appendChild(botMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
     });
 
-    // Hàm gửi tin nhắn
-    function sendMessage() {
-        let msg = document.getElementById("userInput").value;
-        if (!msg.trim()) return;
+    document.getElementById("message").value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
 
-        fetch("chatbot.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: "message=" + encodeURIComponent(msg)
-            })
-            .then(res => res.json())
-            .then(data => {
-                let messages = document.getElementById("messages");
-                messages.innerHTML += `<div class="message user"><b>Bạn:</b> ${msg}</div>`;
-                messages.innerHTML += `<div class="message bot"><b>Bot:</b> ${data.reply}</div>`;
-                messages.scrollTop = messages.scrollHeight;
-                document.getElementById("userInput").value = "";
-            });
+// Enter để gửi
+function checkEnter(event) {
+    if(event.key === "Enter") {
+        sendMessage();
     }
-
-    // Ấn Enter để gửi tin nhắn
-    document.getElementById("userInput").addEventListener("keydown", function(e) {
-        if (e.key === "Enter") {
-            sendMessage();
-        }
-    });
-
-    // 👉 Hàm load lịch sử chat
-    function loadHistory() {
-        fetch("chat_history.php")
-            .then(res => res.json())
-            .then(data => {
-                let messages = document.getElementById("messages");
-                messages.innerHTML = "";
-                data.forEach(row => {
-                    messages.innerHTML += `<div class="message ${row.role}">
-                        <b>${row.role === "user" ? "Bạn" : "Bot"}:</b> ${row.message}
-                    </div>`;
-                });
-                messages.scrollTop = messages.scrollHeight;
-            });
-    }
+}
 </script>

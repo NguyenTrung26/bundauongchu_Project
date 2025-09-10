@@ -10,17 +10,18 @@ include 'header.php';
 if (isset($_GET['act'])) {
     $act = $_GET['act'];
     switch ($act) {
-            // danhmuc
+        // danhmuc
 
         case 'adddm':
-            //check người dùng có nhập dữ liệu hay không
             if (isset($_POST['themmoi']) && ($_POST['themmoi'])) {
                 $tenloai = $_POST['tenloai'];
                 danhmuc_insert($tenloai);
-                $thongbao = "Thêm mới thành công";
+                header("Location: index.php?act=listdm");
+                exit;
             }
             include 'danhmuc/add.php';
             break;
+
 
         case 'listdm':
             $listdanhmuc = danhmuc_loadall();
@@ -61,7 +62,7 @@ if (isset($_GET['act'])) {
             break;
         case 'xoabl':
             if (isset($_GET['id']) && ($_GET['id'] > 0)) {
-                $sql="delete from binhluan where id=".$_GET['id'];
+                $sql = "delete from binhluan where id=" . $_GET['id'];
                 pdo_execute($sql);
             }
             $listbinhluan = loadall_binhluan(0);
@@ -155,29 +156,29 @@ if (isset($_GET['act'])) {
             include 'sanpham/list.php';
             break;
         case 'thongke':
-            $listthongke=loadall_thongke();
+            $listthongke = loadall_thongke();
             include 'thongke/list.php';
             break;
         case 'bieudo':
-            
+
             include 'thongke/bieudo.php';
             break;
         case 'listbill':
-            if(isset($_POST['kyw']) && ($_POST['kyw']!="")){
-                $kyw=$_POST['kyw'];
-            }else{
-                $kyw="";
+            if (isset($_POST['kyw']) && ($_POST['kyw'] != "")) {
+                $kyw = $_POST['kyw'];
+            } else {
+                $kyw = "";
             }
-            $listbill=loadall_bill($kyw,0);
+            $listbill = loadall_bill($kyw, 0);
             include 'bill/listbill.php';
             break;
 
         default:
-        $listthongke=loadall_thongke();
+            $listthongke = loadall_thongke();
             include 'home.php';
     }
 } else {
-    $listthongke=loadall_thongke();
+    $listthongke = loadall_thongke();
     include 'home.php';
 }
 
@@ -185,5 +186,3 @@ if (isset($_GET['act'])) {
 
 
 include 'footer.php';
-?>
-

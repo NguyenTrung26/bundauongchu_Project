@@ -27,6 +27,6 @@
                 <li><a href="index.php">HOME</a></li>
                 <li><a href="index.php?act=introduce">INTRODUCE</a></li>
                 <li><a href="index.php?act=contact">CONTACT</a></li>
-                <li><a href="index.php?act=hoidap">FAQ</a></li>
+                <li><a href="index.php?act=faq">FAQ</a></li>
             </ul>
         </div>

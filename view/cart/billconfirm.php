@@ -36,6 +36,17 @@
                     <li><b>Phương thức thanh toán:</b> 
                         <?= ($bill['bill_pttt']==1) ? "Thanh toán khi nhận hàng" : (($bill['bill_pttt']==2) ? "Chuyển khoản ngân hàng" : "Thanh toán online") ?>
                     </li>
+
+                    <!-- Nếu chọn Chuyển khoản thì hiển thị nút MoMo -->
+                    <?php if ($bill['bill_pttt']==2) { ?>
+                        <div style="margin-top:15px;">
+                            <a href="momo_qr.php?orderId=<?= $bill['id'] ?>&amount=<?= ($bill['total_final']>0) ? $bill['total_final'] : $bill['total'] ?>" target="_blank">
+                                <button style="background:#a50064;color:#fff;padding:12px 20px;border:none;border-radius:8px;cursor:pointer;font-size:16px;">
+                                    💳 Thanh toán bằng MoMo QR
+                                </button>
+                            </a>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
 

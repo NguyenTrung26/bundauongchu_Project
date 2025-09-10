@@ -74,30 +74,7 @@
                         </li>';
             }
             ?>
-            <!-- <li>
-                        <a href="">Đồng hồ</a>
-                    </li>
-                    <li>
-                        <a href="">Laptop</a>
-                    </li>
-                    <li>
-                        <a href="">Điện thoại</a>
-                    </li>
-                    <li>
-                        <a href="">Balo</a>
-                    </li>
-                    <li>
-                        <a href="">Đồng hồ</a>
-                    </li>
-                    <li>
-                        <a href="">Laptop</a>
-                    </li>
-                    <li>
-                        <a href="">Điện thoại</a>
-                    </li>
-                    <li>
-                        <a href="">Balo</a>
-                    </li> -->
+            
         </ul>
     </div>
     <div class="boxfooter searchbox">
