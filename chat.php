@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $messages = array_merge($messages, $_SESSION["chat_history"]);
 
     // Gọi API OpenAI
-    $apiKey = "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"; // thay bằng key của bạn
+    $apiKey = ""; // thay bằng key của bạn
     $url = "https://api.openai.com/v1/chat/completions";
 
     $data = [
