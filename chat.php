@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $messages = array_merge($messages, $_SESSION["chat_history"]);
 
     // Gọi API OpenAI
-    $apiKey = ""; // thay bằng key của bạn
+    $apiKey = getenv('OPENAI_API_KEY') ?: 'DUMMY_KEY';
     $url = "https://api.openai.com/v1/chat/completions";
 
     $data = [
@@ -82,4 +82,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         echo "Xin lỗi, hiện tại hệ thống gặp sự cố khi trả lời.";
     }
 }
-?>
