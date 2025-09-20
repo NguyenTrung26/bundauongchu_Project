@@ -1,3 +1,4 @@
+
 <?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -5,6 +6,8 @@ if (session_status() == PHP_SESSION_NONE) {
 require_once 'model/pdo.php';
 require_once 'model/cart.php';
 require_once 'model/discount.php';
+require_once 'vietqr_config.php';
+require_once 'vietqr_helper.php';
 
 // Xử lý áp mã giảm giá
 $message = "";
@@ -21,6 +24,26 @@ if (isset($_POST['apply_discount'])) {
         unset($_SESSION['discount_code']);
         $message = "<p style='color:red'>Mã giảm giá không hợp lệ hoặc đã hết hạn!</p>";
     }
+}
+
+// Xử lý đặt hàng và tạo QR
+if (isset($_POST['dongydathang'])) {
+    // Lưu đơn hàng vào database (code hiện tại của bạn)
+    // ... code xử lý đặt hàng ...
+    
+    // Tạo QR Code nếu chọn chuyển khoản
+    if ($_POST['pttt'] == '2') {
+        $orderId = $bill['id']; // ID đơn hàng vừa tạo
+        $amount = $_POST['tongdonhang'];
+        $description = "Thanh toan don hang CHN-" . $orderId;
+        
+        // Tạo QR bằng Quick Link (không cần API key)
+        $qrInfo = VietQRHelper::generateQRForOrder($orderId, $amount, $description);
+    }
+    
+    // Redirect đến trang confirm
+    header("Location: index.php?act=billconfirm&orderId=" . $orderId);
+    exit;
 }
 ?>
 
@@ -62,6 +85,23 @@ if (isset($_POST['apply_discount'])) {
             border: 1px dashed #aaa;
             background: #f9f9f9;
         }
+        
+        .payment-method {
+            margin: 10px 0;
+        }
+        
+        .payment-method input[type="radio"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .vietqr-info {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #4CAF50;
+        }
     </style>
 
     <div class="boxtrai mr">
@@ -83,19 +123,19 @@ if (isset($_POST['apply_discount'])) {
                         ?>
                         <tr>
                             <td>Họ tên</td>
-                            <td><input type="text" name="user" value="<?= $name ?>"></td>
+                            <td><input type="text" name="user" value="<?= $name ?>" required></td>
                         </tr>
                         <tr>
                             <td>Địa chỉ</td>
-                            <td><input type="text" name="addr" value="<?= $addr ?>"></td>
+                            <td><input type="text" name="addr" value="<?= $addr ?>" required></td>
                         </tr>
                         <tr>
                             <td>Điện thoại</td>
-                            <td><input type="text" name="phone" value="<?= $phone ?>"></td>
+                            <td><input type="text" name="phone" value="<?= $phone ?>" required></td>
                         </tr>
                         <tr>
                             <td>Email</td>
-                            <td><input type="text" name="email" value="<?= $email ?>"></td>
+                            <td><input type="text" name="email" value="<?= $email ?>" required></td>
                         </tr>
                     </table>
                 </div>
@@ -105,13 +145,37 @@ if (isset($_POST['apply_discount'])) {
             <div class="row mb">
                 <div class="boxtitle">PHƯƠNG THỨC THANH TOÁN</div>
                 <div class="row boxcontent">
-                    <table>
-                        <tr>
-                            <td><input type="radio" name="pttt" value="1" checked> Thanh toán khi nhận hàng</td>
-                            <td><input type="radio" name="pttt" value="2"> Chuyển khoản ngân hàng</td>
-                            <td><input type="radio" name="pttt" value="3"> Thanh toán online</td>
-                        </tr>
-                    </table>
+                    <div class="payment-method">
+                        <label>
+                            <input type="radio" name="pttt" value="1" checked> 
+                            💵 Thanh toán khi nhận hàng
+                        </label>
+                    </div>
+                    <div class="payment-method">
+                        <label>
+                            <input type="radio" name="pttt" value="2" id="bank_transfer"> 
+                            🏦 Chuyển khoản ngân hàng (VietQR)
+                        </label>
+                    </div>
+                    <div class="payment-method">
+                        <label>
+                            <input type="radio" name="pttt" value="3"> 
+                            💳 Thanh toán online
+                        </label>
+                    </div>
+                    
+                    <!-- Thông tin VietQR -->
+                    <div id="vietqr_info" class="vietqr-info" style="display:none;">
+                        <h4>📱 Thanh toán qua VietQR</h4>
+                        <p><strong>🏦 Ngân hàng:</strong> <?= VietQRHelper::getBankName() ?></p>
+                        <p><strong>📞 Số tài khoản:</strong> <?= VietQRConfig::BANK_ACCOUNT ?></p>
+                        <p><strong>👤 Tên tài khoản:</strong> <?= VietQRConfig::BANK_NAME ?></p>
+                        <p><strong>💰 Số tiền:</strong> <span id="display_amount">0</span> VNĐ</p>
+                        <p><strong>📝 Nội dung:</strong> Thanh toán đơn hàng</p>
+                        <p style="color:#666; font-size:14px;">
+                            ✅ Sau khi đặt hàng, bạn sẽ nhận được mã QR để thanh toán ngay lập tức
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -139,8 +203,8 @@ if (isset($_POST['apply_discount'])) {
 
             <!-- Nhập mã giảm giá -->
             <div class="row mb discount-box">
-                <label for="discount_code">Mã giảm giá:</label>
-                <input type="text" name="discount_code" placeholder="Nhập mã giảm giá">
+                <label for="discount_code">🎫 Mã giảm giá:</label>
+                <input type="text" name="discount_code" placeholder="Nhập mã giảm giá" value="<?= $_SESSION['discount_code'] ?? '' ?>">
                 <input type="submit" name="apply_discount" value="Áp dụng" formaction="">
                 <?= $message ?>
             </div>
@@ -148,7 +212,7 @@ if (isset($_POST['apply_discount'])) {
             <!-- Nút đặt hàng -->
             <div class="row mb bill">
                 <input type="hidden" name="tongdonhang" value="<?= $tong ?>">
-                <input type="submit" value="ĐỒNG Ý ĐẶT HÀNG" name="dongydathang">
+                <input type="submit" value="🛒 ĐỒNG Ý ĐẶT HÀNG" name="dongydathang">
             </div>
         </form>
     </div>
@@ -157,3 +221,27 @@ if (isset($_POST['apply_discount'])) {
         <?php include 'view/boxright.php'; ?>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const bankTransfer = document.getElementById('bank_transfer');
+    const vietqrInfo = document.getElementById('vietqr_info');
+    const displayAmount = document.getElementById('display_amount');
+    const paymentMethods = document.querySelectorAll('input[name="pttt"]');
+    
+    // Cập nhật số tiền hiển thị
+    const amount = <?= $tong ?>;
+    displayAmount.textContent = new Intl.NumberFormat('vi-VN').format(amount);
+    
+    // Xử lý hiển thị thông tin VietQR
+    paymentMethods.forEach(method => {
+        method.addEventListener('change', function() {
+            if (this.value === '2') {
+                vietqrInfo.style.display = 'block';
+            } else {
+                vietqrInfo.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
