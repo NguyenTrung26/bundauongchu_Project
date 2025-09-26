@@ -2,7 +2,7 @@
 
 # 🍲 Bún Đậu Ông Chú  
 
-![PHP](https://img.shields.io/badge/PHP-7.4-blue?logo=php)  
+![PHP](https://img.shields.io/badge/PHP-8.2.12-blue?logo=php)  
 ![MySQL](https://img.shields.io/badge/MySQL-5.7-orange?logo=mysql)  
 ![HTML](https://img.shields.io/badge/HTML-5-red?logo=html5)  
 ![CSS](https://img.shields.io/badge/CSS-3-blue?logo=css3)  
